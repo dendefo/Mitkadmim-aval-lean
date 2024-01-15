@@ -15,7 +15,12 @@ public class Soldier : MonoBehaviour
     [SerializeField] Material ReguralMaterial;
     [SerializeField] Material ChosenMaterial;
     public static List<Soldier> chosedSoldier = new();
+    public static List<Soldier> soldiers = new();
 
+    private void Awake()
+    {
+        soldiers.Add(this);
+    }
     private void OnMouseUp()
     {
         if (!(Input.GetKey(KeyCode.LeftControl)||Input.GetKey(KeyCode.LeftShift))) ClearChoose();
@@ -57,5 +62,11 @@ public class Soldier : MonoBehaviour
     {
         if (chosedSoldier != null) chosedSoldier.ForEach(sol => sol.meshRenderer.material = sol.ReguralMaterial);
         chosedSoldier.Clear();
+    }
+    public void IsInsideRect(Rect rect,Camera camera)
+    {
+        var screenPos = camera.WorldToScreenPoint(transform.position);
+        if (rect.Contains(screenPos)) Chose();
+        else if (chosedSoldier.Remove(this)) meshRenderer.material = ReguralMaterial;
     }
 }
