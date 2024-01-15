@@ -50,15 +50,7 @@ public class WalkingManager : MonoBehaviour
             var secondCorner = new Vector2(Mathf.Max(startMousePos.x, curentMousePos.x), Mathf.Max(startMousePos.y, curentMousePos.y));
             Soldier.soldiers.ForEach(sol => sol.IsInsideRect(new(corner,secondCorner-corner), _camera));
 
-            //RaycastHit[] hits = Physics.BoxCastAll(_camera.transform.position, new(_image.rectTransform.sizeDelta.x/Screen.width, _image.rectTransform.sizeDelta.x / Screen.height) , _camera.transform.rotation * Vector3.forward, _camera.transform.rotation, 200f, LayerMask.GetMask("Units"));
-            //if (hits.Length != 0) Soldier.ClearChoose();
-            //foreach (var hit in hits)
-            //{
-            //    Soldier sol;
-            //    if (!hit.transform.TryGetComponent(out sol)) continue;
-            //    sol.Chose();
-            //    Debug.Log(Soldier.chosedSoldier.Count);
-            //}
+            
         }
 
     }
