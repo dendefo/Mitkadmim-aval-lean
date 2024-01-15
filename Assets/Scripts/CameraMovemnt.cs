@@ -16,8 +16,8 @@ public class CameraMovemnt : MonoBehaviour
         if (Input.GetKey(KeyCode.S)) direction += Vector3.down;
         if (Input.GetKey(KeyCode.A)) direction += Vector3.left;
         if (Input.GetKey(KeyCode.D)) direction += Vector3.right;
-        if (Input.mouseScrollDelta.y != 0) _camera.orthographicSize = Mathf.Min(Mathf.Max(minOrtoSize, Input.mouseScrollDelta.y + _camera.orthographicSize), maxOrtoSize);
-
+        if (Input.mouseScrollDelta.y != 0) _camera.orthographicSize = Mathf.Min(Mathf.Max(minOrtoSize, -Input.mouseScrollDelta.y + _camera.orthographicSize), maxOrtoSize);
+        if (Input.GetKey(KeyCode.LeftShift)) direction *= 5;
         transform.Translate(direction * speed * Time.deltaTime);
     }
 }

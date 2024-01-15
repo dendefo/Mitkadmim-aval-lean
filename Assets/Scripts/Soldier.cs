@@ -10,10 +10,9 @@ using UnityEngine.EventSystems;
 public class Soldier : MonoBehaviour
 {
     [SerializeField] NavMeshAgent agent;
+    [SerializeField] Animator animator;
     [SerializeField] Queue<Vector3> points = new();
-    [SerializeField] MeshRenderer meshRenderer;
-    [SerializeField] Material ReguralMaterial;
-    [SerializeField] Material ChosenMaterial;
+    [SerializeField] SkinnedMeshRenderer meshRenderer;
     public static List<Soldier> chosedSoldier = new();
     public static List<Soldier> soldiers = new();
 
@@ -29,6 +28,7 @@ public class Soldier : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        animator.SetFloat("Speed", agent.velocity.magnitude);
         if (points.Count == 0) return;
         if (agent.remainingDistance > 2) return;
         agent.SetDestination(points.Dequeue());
@@ -56,17 +56,17 @@ public class Soldier : MonoBehaviour
     {
         if (chosedSoldier.Contains(this)) return;
         chosedSoldier.Add(this);
-        meshRenderer.material = ChosenMaterial;
+        meshRenderer.materials.ToList().ForEach(mat=>mat.color = UnityEngine.Color.green);
     }
     static public void ClearChoose()
     {
-        if (chosedSoldier != null) chosedSoldier.ForEach(sol => sol.meshRenderer.material = sol.ReguralMaterial);
+        if (chosedSoldier != null) chosedSoldier.ForEach(sol => sol.meshRenderer.materials.ToList().ForEach(mat => mat.color = UnityEngine.Color.white));
         chosedSoldier.Clear();
     }
     public void IsInsideRect(Rect rect, Camera camera)
     {
         var screenPos = camera.WorldToScreenPoint(transform.position);
         if (rect.Contains(screenPos)) Chose();
-        else if (!(Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.LeftShift)) && chosedSoldier.Remove(this)) meshRenderer.material = ReguralMaterial;
+        else if (!(Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.LeftShift)) && chosedSoldier.Remove(this)) meshRenderer.materials.ToList().ForEach(mat => mat.color = UnityEngine.Color.white);
     }
 }
