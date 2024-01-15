@@ -14,28 +14,48 @@ public class Soldier : MonoBehaviour
     [SerializeField] MeshRenderer meshRenderer;
     [SerializeField] Material ReguralMaterial;
     [SerializeField] Material ChosenMaterial;
-    public static Soldier chosedSoldier;
+    public static List<Soldier> chosedSoldier = new();
 
-    private void OnMouseDown()
+    private void OnMouseUp()
     {
-        if (chosedSoldier != null) chosedSoldier.meshRenderer.material = ReguralMaterial;
-        chosedSoldier = this;
-        meshRenderer.material = ChosenMaterial;
+        if (!(Input.GetKey(KeyCode.LeftControl)||Input.GetKey(KeyCode.LeftShift))) ClearChoose();
+        Chose();
     }
     // Update is called once per frame
     void Update()
     {
         if (points.Count == 0) return;
-        if (agent.remainingDistance > 1) return;
+        if (agent.remainingDistance > 2) return;
         agent.SetDestination(points.Dequeue());
     }
-    public void Navigate(Vector3 targetTransform)
+    public void NavigateQueue(Vector3 target)
     {
-        points.Enqueue(targetTransform);
+        points.Enqueue(target);
+    }
+    public void Navigate(Vector3 target)
+    {
+        points.Clear();
+        agent.ResetPath();
+        NavigateQueue(target);
     }
     private void OnDrawGizmos()
     {
-        Gizmos.DrawLineList(new(agent.path.corners));
+        try
+        {
+            Gizmos.DrawLineList(new(agent.path.corners));
+        }
+        catch { }
     }
 
+    public void Chose()
+    {
+        if (chosedSoldier.Contains(this)) return;
+        chosedSoldier.Add(this);
+        meshRenderer.material = ChosenMaterial;
+    }
+    static public void ClearChoose()
+    {
+        if (chosedSoldier != null) chosedSoldier.ForEach(sol => sol.meshRenderer.material = sol.ReguralMaterial);
+        chosedSoldier.Clear();
+    }
 }
