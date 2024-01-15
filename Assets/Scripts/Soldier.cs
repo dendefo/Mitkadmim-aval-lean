@@ -23,7 +23,7 @@ public class Soldier : MonoBehaviour
     }
     private void OnMouseUp()
     {
-        if (!(Input.GetKey(KeyCode.LeftControl)||Input.GetKey(KeyCode.LeftShift))) ClearChoose();
+        if (!(Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.LeftShift))) ClearChoose();
         Chose();
     }
     // Update is called once per frame
@@ -63,10 +63,10 @@ public class Soldier : MonoBehaviour
         if (chosedSoldier != null) chosedSoldier.ForEach(sol => sol.meshRenderer.material = sol.ReguralMaterial);
         chosedSoldier.Clear();
     }
-    public void IsInsideRect(Rect rect,Camera camera)
+    public void IsInsideRect(Rect rect, Camera camera)
     {
         var screenPos = camera.WorldToScreenPoint(transform.position);
         if (rect.Contains(screenPos)) Chose();
-        else if (chosedSoldier.Remove(this)) meshRenderer.material = ReguralMaterial;
+        else if (!(Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.LeftShift)) && chosedSoldier.Remove(this)) meshRenderer.material = ReguralMaterial;
     }
 }
