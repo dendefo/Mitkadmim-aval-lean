@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.EventSystems;
@@ -24,11 +26,16 @@ public class Soldier : MonoBehaviour
     void Update()
     {
         if (points.Count == 0) return;
+        if (agent.remainingDistance > 1) return;
         agent.SetDestination(points.Dequeue());
     }
     public void Navigate(Vector3 targetTransform)
     {
         points.Enqueue(targetTransform);
+    }
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawLineList(new(agent.path.corners));
     }
 
 }
