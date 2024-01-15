@@ -5,10 +5,15 @@ using UnityEngine.UI;
 
 public class WalkingManager : MonoBehaviour
 {
-    [SerializeField] Camera _camera;
+    [SerializeField] public Camera _camera;
     [SerializeField] Vector2 startMousePos;
     [SerializeField] Vector2 curentMousePos;
     [SerializeField] Image _image;
+    public static WalkingManager instance;
+    private void Awake()
+    {
+        instance = this;
+    }
     void Update()
     {
         ChooseUnits();
@@ -16,14 +21,16 @@ public class WalkingManager : MonoBehaviour
     }
     void Navigation()
     {
-
         if (!Input.GetMouseButtonDown(1)) return;
         RaycastHit hit;
         if (!Physics.Raycast(_camera.ScreenPointToRay(Input.mousePosition), out hit)) return;
         if (!hit.collider.CompareTag("Surface")) return;
         if (Soldier.chosedSoldier == null) return;
-        if (Input.GetKey(KeyCode.LeftShift)) Soldier.chosedSoldier.ForEach(sol => sol.NavigateQueue(hit.point));
-        else Soldier.chosedSoldier.ForEach(sol => sol.Navigate(hit.point));
+        Soldier.chosedSoldier.ForEach(sol => 
+        {   
+            if (sol.currentForm == null) sol.Navigate(hit.point);
+            else sol.currentForm.GetDestination(sol, hit.point); 
+        });
     }
     void ChooseUnits()
     {
@@ -46,12 +53,24 @@ public class WalkingManager : MonoBehaviour
             curentMousePos = Input.mousePosition;
             _image.enabled = false;
             if (Vector2.Distance(curentMousePos, startMousePos) < 10) return;
-            var corner = new Vector2(Mathf.Min(startMousePos.x,curentMousePos.x), Mathf.Min(startMousePos.y, curentMousePos.y));
+            var corner = new Vector2(Mathf.Min(startMousePos.x, curentMousePos.x), Mathf.Min(startMousePos.y, curentMousePos.y));
             var secondCorner = new Vector2(Mathf.Max(startMousePos.x, curentMousePos.x), Mathf.Max(startMousePos.y, curentMousePos.y));
-            Soldier.soldiers.ForEach(sol => sol.IsInsideRect(new(corner,secondCorner-corner), _camera));
+            Soldier.soldiers.ForEach(sol => sol.IsInsideRect(new(corner, secondCorner - corner), _camera));
 
-            
+
         }
 
+    }
+    public void Form(int formationID)
+    {
+        switch (formationID)
+        {
+            case 0:
+            default:
+                Formation form = new LineForm();
+                Soldier.chosedSoldier.ForEach(sol => form.Join(sol));
+                form.Form();
+                break;
+        }
     }
 }
