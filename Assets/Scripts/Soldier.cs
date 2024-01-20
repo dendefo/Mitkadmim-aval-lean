@@ -13,7 +13,16 @@ public class Soldier : MonoBehaviour
     [SerializeField] Animator animator;
     [SerializeField] Queue<Vector3> points = new();
     [SerializeField] SkinnedMeshRenderer meshRenderer;
-    public static List<Soldier> chosedSoldier = new();
+    private static List<Soldier> _chosenSoldier = new();
+    public static List<Soldier> chosenSoldier
+    {
+        get { return _chosenSoldier; }
+        set
+        {
+            _chosenSoldier = value;
+            //here Activate Sounds
+        }
+    }
     public static List<Soldier> soldiers = new();
     public Formation currentForm;
 
@@ -30,9 +39,15 @@ public class Soldier : MonoBehaviour
     void Update()
     {
         animator.SetFloat("Speed", agent.velocity.magnitude);
+        if (agent.remainingDistance < 1 && !agent.isStopped)
+        {
+            agent.isStopped = true;
+            Debug.Log("I have arraived");
+        }
+        if (!agent.isStopped) return;
         if (points.Count == 0) return;
-        if (agent.remainingDistance > 2) return;
         agent.SetDestination(points.Dequeue());
+
     }
     public void Navigate(Vector3 target)
     {
@@ -40,6 +55,9 @@ public class Soldier : MonoBehaviour
         {
             points.Clear();
             agent.ResetPath();
+            points.Enqueue(target);
+            agent.SetDestination(points.Dequeue());
+            return;
         }
         points.Enqueue(target);
     }
@@ -54,20 +72,20 @@ public class Soldier : MonoBehaviour
 
     public void Chose()
     {
-        if (chosedSoldier.Contains(this)) return;
-        chosedSoldier.Add(this);
+        if (chosenSoldier.Contains(this)) return;
+        chosenSoldier.Add(this);
         meshRenderer.materials.ToList().ForEach(mat => mat.color = UnityEngine.Color.green);
     }
     static public void ClearChoose()
     {
-        if (chosedSoldier != null) chosedSoldier.ForEach(sol => sol.meshRenderer.materials.ToList().ForEach(mat => mat.color = UnityEngine.Color.white));
-        chosedSoldier.Clear();
+        if (chosenSoldier != null) chosenSoldier.ForEach(sol => sol.meshRenderer.materials.ToList().ForEach(mat => mat.color = UnityEngine.Color.white));
+        chosenSoldier.Clear();
     }
     public void IsInsideRect(Rect rect, Camera camera)
     {
         var screenPos = camera.WorldToScreenPoint(transform.position);
         if (rect.Contains(screenPos)) Chose();
-        else if (!(Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.LeftShift)) && chosedSoldier.Remove(this)) meshRenderer.materials.ToList().ForEach(mat => mat.color = UnityEngine.Color.white);
+        else if (!(Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.LeftShift)) && chosenSoldier.Remove(this)) meshRenderer.materials.ToList().ForEach(mat => mat.color = UnityEngine.Color.white);
     }
 }
 public abstract class Formation
@@ -104,7 +122,7 @@ class LineForm : Formation
     {
         Vector3 centralPoint = CentralPoint();
         var rot = WalkingManager.instance._camera.transform.rotation * Vector3.one;
-        rot = Quaternion.Euler(0, 55, 0)*rot;
+        rot = Quaternion.Euler(0, 55, 0) * rot;
         for (int i = 0; i < Soldiers.Count; i++)
         {
             Soldiers[i].Navigate(centralPoint + (rot * (DistanceBetween * i)) - ((rot * DistanceBetween * (Soldiers.Count / 2))));

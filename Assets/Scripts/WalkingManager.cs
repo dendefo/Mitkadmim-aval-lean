@@ -25,8 +25,8 @@ public class WalkingManager : MonoBehaviour
         RaycastHit hit;
         if (!Physics.Raycast(_camera.ScreenPointToRay(Input.mousePosition), out hit)) return;
         if (!hit.collider.CompareTag("Surface")) return;
-        if (Soldier.chosedSoldier == null) return;
-        Soldier.chosedSoldier.ForEach(sol => 
+        if (Soldier.chosenSoldier == null) return;
+        Soldier.chosenSoldier.ForEach(sol => 
         {   
             if (sol.currentForm == null) sol.Navigate(hit.point);
             else sol.currentForm.GetDestination(sol, hit.point); 
@@ -68,7 +68,7 @@ public class WalkingManager : MonoBehaviour
             case 0:
             default:
                 Formation form = new LineForm();
-                Soldier.chosedSoldier.ForEach(sol => form.Join(sol));
+                Soldier.chosenSoldier.ForEach(sol => form.Join(sol));
                 form.Form();
                 break;
         }
