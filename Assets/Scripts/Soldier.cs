@@ -6,14 +6,23 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.EventSystems;
+using UnityEngine.Events;
 
 public class Soldier : MonoBehaviour
 {
     [SerializeField] NavMeshAgent agent;
     [SerializeField] Animator animator;
+    [SerializeField] List<AudioClip> VoiceLines;
+    
     [SerializeField] Queue<Vector3> points = new();
     [SerializeField] SkinnedMeshRenderer meshRenderer;
     private static List<Soldier> _chosenSoldier = new();
+
+    public UnityEvent<string,float> SoldierMove;
+    public static Action<AudioClip> VoiceLineTrigger;
+    public static Action<Vector3> TargetPosition;
+    public static Action ArrivedAtPosition;
+
     public static List<Soldier> chosenSoldier
     {
         get { return _chosenSoldier; }
@@ -38,10 +47,11 @@ public class Soldier : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        animator.SetFloat("Speed", agent.velocity.magnitude);
+        SoldierMove.Invoke("Speed", agent.velocity.magnitude);
         if (agent.remainingDistance < 1 && !agent.isStopped)
         {
             agent.isStopped = true;
+            ArrivedAtPosition.Invoke();
             Debug.Log("I have arraived");
         }
         if (!agent.isStopped) return;
@@ -51,6 +61,11 @@ public class Soldier : MonoBehaviour
     }
     public void Navigate(Vector3 target)
     {
+        if (VoiceLines.Count > 0)
+        {
+            VoiceLineTrigger.Invoke(VoiceLines[VoiceLines.Count - 1]);
+        }
+        TargetPosition.Invoke(target);
         if (!Input.GetKey(KeyCode.LeftShift))
         {
             points.Clear();
@@ -60,6 +75,7 @@ public class Soldier : MonoBehaviour
             return;
         }
         points.Enqueue(target);
+        
     }
     private void OnDrawGizmos()
     {
@@ -75,6 +91,10 @@ public class Soldier : MonoBehaviour
         if (chosenSoldier.Contains(this)) return;
         chosenSoldier.Add(this);
         meshRenderer.materials.ToList().ForEach(mat => mat.color = UnityEngine.Color.green);
+        if (VoiceLines.Count > 0)
+        {
+            VoiceLineTrigger.Invoke(VoiceLines[0]);
+        }
     }
     static public void ClearChoose()
     {
