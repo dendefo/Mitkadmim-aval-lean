@@ -21,7 +21,8 @@ public class Soldier : MonoBehaviour
     public UnityEvent<string,float> SoldierMove;
     public static Action<AudioClip> VoiceLineTrigger;
     public static Action<Vector3> TargetPosition;
-    public static Action ArrivedAtPosition;
+    public UnityEvent<Dummy> ArrivedAtPosition;
+    public static UnityEvent ArrivedAtPositionAll = new();
 
     public static List<Soldier> chosenSoldier
     {
@@ -34,6 +35,7 @@ public class Soldier : MonoBehaviour
     }
     public static List<Soldier> soldiers = new();
     public Formation currentForm;
+    private Dummy dummy;
 
     private void Awake()
     {
@@ -41,8 +43,8 @@ public class Soldier : MonoBehaviour
     }
     private void OnMouseUp()
     {
-        if (!(Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.LeftShift))) ClearChoose();
-        Chose();
+        //if (!(Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.LeftShift))) ClearChoose();
+        //Chose();
     }
     // Update is called once per frame
     void Update()
@@ -51,7 +53,8 @@ public class Soldier : MonoBehaviour
         if (agent.remainingDistance < 1 && !agent.isStopped)
         {
             agent.isStopped = true;
-            ArrivedAtPosition.Invoke();
+            ArrivedAtPosition.Invoke(dummy);
+            ArrivedAtPositionAll.Invoke();
             Debug.Log("I have arraived");
         }
         if (!agent.isStopped) return;
@@ -61,6 +64,7 @@ public class Soldier : MonoBehaviour
     }
     public void Navigate(Vector3 target)
     {
+        agent.isStopped = false;
         if (VoiceLines.Count > 0)
         {
             VoiceLineTrigger.Invoke(VoiceLines[VoiceLines.Count - 1]);
@@ -107,6 +111,20 @@ public class Soldier : MonoBehaviour
         if (rect.Contains(screenPos)) Chose();
         else if (!(Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.LeftShift)) && chosenSoldier.Remove(this)) meshRenderer.materials.ToList().ForEach(mat => mat.color = UnityEngine.Color.white);
     }
+
+    public void WalkAndAttack(Dummy dummy)
+    {
+        Navigate(dummy.transform.position);
+        this.dummy = dummy;
+    }
+    public void Attack(Dummy dummy)
+    {
+        if (dummy == null) return;
+        animator.SetTrigger("Attack");
+        dummy.Defend();
+        this.dummy = null;
+    }
+
 }
 public abstract class Formation
 {

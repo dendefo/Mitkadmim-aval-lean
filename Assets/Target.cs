@@ -8,7 +8,7 @@ public class Target : MonoBehaviour
     void Start()
     {
         Soldier.TargetPosition += UpdatePosition;
-        Soldier.ArrivedAtPosition += ArrivedAtPosition;
+        Soldier.ArrivedAtPositionAll.AddListener(ArrivedAtPosition);
     }
 
     private void UpdatePosition(Vector3 position)
