@@ -9513,6 +9513,74 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b1cd6c13d3aa5d54485cec058e81758c, type: 3}
+--- !u!1001 &2083597971
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3921967421445058088, guid: b1cd6c13d3aa5d54485cec058e81758c,
+        type: 3}
+      propertyPath: m_Name
+      value: Orc_Wolfrider Variant (7)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3921967421445322452, guid: b1cd6c13d3aa5d54485cec058e81758c,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 559.18384
+      objectReference: {fileID: 0}
+    - target: {fileID: 3921967421445322452, guid: b1cd6c13d3aa5d54485cec058e81758c,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 100.00004
+      objectReference: {fileID: 0}
+    - target: {fileID: 3921967421445322452, guid: b1cd6c13d3aa5d54485cec058e81758c,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -54.344368
+      objectReference: {fileID: 0}
+    - target: {fileID: 3921967421445322452, guid: b1cd6c13d3aa5d54485cec058e81758c,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3921967421445322452, guid: b1cd6c13d3aa5d54485cec058e81758c,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3921967421445322452, guid: b1cd6c13d3aa5d54485cec058e81758c,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3921967421445322452, guid: b1cd6c13d3aa5d54485cec058e81758c,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3921967421445322452, guid: b1cd6c13d3aa5d54485cec058e81758c,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3921967421445322452, guid: b1cd6c13d3aa5d54485cec058e81758c,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3921967421445322452, guid: b1cd6c13d3aa5d54485cec058e81758c,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b1cd6c13d3aa5d54485cec058e81758c, type: 3}
 --- !u!1001 &5494094380014995945
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9577,7 +9645,8 @@ PrefabInstance:
       value: Terrain
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 8892166033269995553, guid: d3309fdae46ca2e47b593578d446d0cc, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d3309fdae46ca2e47b593578d446d0cc, type: 3}
@@ -10290,3 +10359,4 @@ SceneRoots:
   - {fileID: 1901834944}
   - {fileID: 836743956}
   - {fileID: 1323454501}
+  - {fileID: 2083597971}
