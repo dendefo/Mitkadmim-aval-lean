@@ -46,7 +46,6 @@ public class Soldier : MonoBehaviour
         //if (!(Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.LeftShift))) ClearChoose();
         //Chose();
     }
-    // Update is called once per frame
     void Update()
     {
         SoldierMove.Invoke("Speed", agent.velocity.magnitude);
