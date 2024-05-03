@@ -87,8 +87,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hpBar: {fileID: 1548716811016840463}
   stats:
-    MaxHP: 10
-    CurrentHP: 10
+    MaxHP: 40
+    CurrentHP: 40
     Damage: 0
 --- !u!1 &8282761183337305436
 GameObject:

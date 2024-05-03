@@ -29,4 +29,11 @@ public struct CreatureStats
             Die?.Invoke();
         }
     }
+
+    public void Multiply(float b)
+    {
+        MaxHP *= b;
+        CurrentHP *= b;
+        Damage *= b;
+    }
 }

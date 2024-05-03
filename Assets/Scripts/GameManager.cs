@@ -19,6 +19,8 @@ public class GameManager : MonoBehaviour
     public int GoldAmount = 0;
     public float SecondsBetweenGoldIncome = 2f;
     [SerializeField] private float goldIncomeTimer = 2f;
+    public float difficulryMultiplyer = 1;
+    public GameObject pausePanel;
     private void Awake()
     {
         if (instance == null)
@@ -45,6 +47,10 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Pause(!IPausable.isPaused);
+        }
         //Spawn enemies
         SpawnTimer();
         //Income gold
@@ -52,6 +58,7 @@ public class GameManager : MonoBehaviour
     }
     private void SpawnTimer()
     {
+        if (IPausable.isPaused) return;
         if (spawnTimer > 0)
         {
             spawnTimer -= Time.deltaTime;
@@ -67,6 +74,7 @@ public class GameManager : MonoBehaviour
     }
     private void GoldIncome()
     {
+        if (IPausable.isPaused) return;
         if (goldIncomeTimer > 0)
         {
             goldIncomeTimer -= Time.deltaTime;
@@ -79,7 +87,7 @@ public class GameManager : MonoBehaviour
     }
     private void ChangeGoldAmount(int amount)
     {
-        GoldAmount+= amount;
+        GoldAmount += amount;
         goldText.text = GoldAmount.ToString();
     }
     private void SpawnEnemy()
@@ -93,12 +101,14 @@ public class GameManager : MonoBehaviour
         var enemyNumber = UnityEngine.Random.Range(0, PossibleEnemiesToSpawn.Count);
         var enemy = Instantiate(PossibleEnemiesToSpawn[enemyNumber], Spawners[spawnerNumber].position, Quaternion.identity);
         enemy.AttackingTarget = playerBase.transform;
+        enemy.Stats.Multiply(difficulryMultiplyer);
         enemy.Stats.Die += () => EnemyDead(enemy);
     }
 
     private void EnemyDead(Enemy enemy)
     {
         Instantiate(Resources.Load<GoldCoin>("GoldCoin"), enemy.transform.position, Quaternion.identity).value = enemy.data.GoldValue;
+        difficulryMultiplyer *= 1.1f;
     }
 
     private void CameraCreated(Camera camera)
@@ -109,5 +119,11 @@ public class GameManager : MonoBehaviour
     {
         CameraMovement.CameraCreated -= CameraCreated;
         GoldCoin.OnGoldCoinClick -= GoldCoinClicked;
+    }
+
+    public void Pause(bool isPaused)
+    {
+        IPausable.Pause(isPaused);
+        pausePanel.SetActive(isPaused);
     }
 }

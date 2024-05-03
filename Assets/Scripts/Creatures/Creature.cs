@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Creature : MonoBehaviour
+public class Creature : MonoBehaviour, IPausable
 {
     public static event Action<AudioClip> VoiceEvent;
     public static event Action<Creature> CreatureSpawned;
@@ -25,11 +25,19 @@ public class Creature : MonoBehaviour
 
     protected virtual void Awake()
     {
+        IPausable.PauseEvent += Pause;
         creatures.Add(this);
         if (data != null) SetStats(data.stats);
         if (hpBar != null) hpBar.Subscribe(ref Stats.HpChanged);
         Stats.Die += Die;
     }
+
+    private void Pause(bool isPaused)
+    {
+        NavAgent.enabled = !isPaused;
+        animator.enabled = !isPaused;
+    }
+
     private void Start()
     {
         CreatureSpawned?.Invoke(this);
@@ -43,6 +51,7 @@ public class Creature : MonoBehaviour
 
     protected virtual void Update()
     {
+        if (IPausable.isPaused) return;
         UpdateAnimations();
         if (points.Count > 0 && NavAgent.remainingDistance < 0.1f)
         {
@@ -85,7 +94,7 @@ public class Creature : MonoBehaviour
     }
     private void UpdateAnimations()
     {
-        animator.SetFloat("Speed", NavAgent.velocity.magnitude);
+        animator.SetFloat("Speed", NavAgent.velocity.normalized.x);
         animator.SetFloat("Rotation", NavAgent.velocity.normalized.x);
     }
 
@@ -101,6 +110,14 @@ public class Creature : MonoBehaviour
         chosenCreatures.Clear();
         Choise();
 
+    }
+    private void OnMouseEnter()
+    {
+        hpBar.gameObject.SetActive(true);
+    }
+    private void OnMouseExit()
+    {
+        hpBar.gameObject.SetActive(false);
     }
     public void Choise()
     {
@@ -143,6 +160,8 @@ public class Creature : MonoBehaviour
     }
     protected virtual void OnDestroy()
     {
+
+        IPausable.PauseEvent -= Pause;
         Stats.Die -= Die;
         creatures.Remove(this);
         if (chosenCreatures.Contains(this)) chosenCreatures.Remove(this);

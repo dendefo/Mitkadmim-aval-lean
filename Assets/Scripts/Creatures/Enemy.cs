@@ -14,6 +14,7 @@ public class Enemy : Creature
     }
     override protected void Update()
     {
+        if (IPausable.isPaused) return;
         if (AttackingTarget == null)
         {
             return;

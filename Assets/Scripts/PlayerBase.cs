@@ -12,6 +12,14 @@ public class PlayerBase : MonoBehaviour
         hpBar.Subscribe(ref stats.HpChanged);
     }
 
+    private void OnMouseEnter()
+    {
+        hpBar.gameObject.SetActive(true);
+    }
+    private void OnMouseExit()
+    {
+        hpBar.gameObject.SetActive(false);
+    }
     private void OnDestroy()
     {
         hpBar.Unsubscribe();
