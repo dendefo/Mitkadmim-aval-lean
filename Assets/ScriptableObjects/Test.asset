@@ -13,9 +13,12 @@ MonoBehaviour:
   m_Name: Test
   m_EditorClassIdentifier: 
   stats:
-    MaxHP: 100
-    CurrentHP: 100
-    Damage: 50
+    MaxHP: 10
+    CurrentHP: 10
+    Damage: 5
+  GoldValue: 5
+  AngerRange: 10
+  AttackRange: 5
   OnPickClip: {fileID: 8300000, guid: 699c1280094dc67489370cf55f6e7630, type: 3}
   OnMoveClip: {fileID: 8300000, guid: d5604d1b3eb02374390a7598cf6c3e64, type: 3}
   OnDieClip: {fileID: 0}

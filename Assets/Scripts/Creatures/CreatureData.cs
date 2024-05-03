@@ -6,6 +6,9 @@ using UnityEngine;
 public class CreatureData : ScriptableObject
 {
     public CreatureStats stats;
+    public int GoldValue;
+    public float AngerRange;
+    public float AttackRange;
     public AudioClip OnPickClip;
     public AudioClip OnMoveClip;
     public AudioClip OnDieClip;

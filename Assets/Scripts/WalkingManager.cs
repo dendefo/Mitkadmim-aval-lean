@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,11 +10,7 @@ public class WalkingManager : MonoBehaviour
     [SerializeField] Vector2 startMousePos;
     [SerializeField] Vector2 curentMousePos;
     [SerializeField] Image _image;
-    public static WalkingManager instance;
-    private void Awake()
-    {
-        instance = this;
-    }
+
     void Update()
     {
         ChooseUnits();
@@ -31,6 +28,8 @@ public class WalkingManager : MonoBehaviour
         }
         else Creature.chosenCreatures.ForEach(c => c.NavigateAndClearPatroll(hit.point));
     }
+
+
     void ChooseUnits()
     {
         if (Input.GetMouseButtonDown(0))

@@ -1,14 +1,29 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraMovemnt : MonoBehaviour
+public class CameraMovement : MonoBehaviour
 {
     [SerializeField] float speed;
     [SerializeField] float AngularSpeed;
     [SerializeField] Camera _camera;
     [SerializeField] float minOrtoSize;
     [SerializeField] float maxOrtoSize;
+    public static event Action<Camera> CameraCreated;
+
+    private void Awake()
+    {
+        Creature.CreatureSpawned += CreatureSpawned;
+    }
+    private void Start()
+    {
+        CameraCreated?.Invoke(_camera);
+    }
+    private void CreatureSpawned(Creature creature)
+    {
+        creature.hpBar.SetUp(_camera.transform);
+    }
 
     void Update()
     {
