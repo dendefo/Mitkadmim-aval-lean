@@ -6,4 +6,9 @@ using UnityEngine;
 public class CreatureData : ScriptableObject
 {
     public CreatureStats stats;
+    public AudioClip OnPickClip;
+    public AudioClip OnMoveClip;
+    public AudioClip OnDieClip;
+    public AudioClip OnAttackClip;
+    public AudioClip OnHitClip;
 }

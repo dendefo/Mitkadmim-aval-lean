@@ -59,7 +59,7 @@ public class AudioManager : MonoBehaviour
 
     private void Start()
     {
-        Soldier.VoiceLineTrigger += PlaysfxTrack;
+        Creature.VoiceEvent += PlaysfxTrack;
     }
 
     private void AdjustVolumes()

@@ -22,15 +22,14 @@ public class WalkingManager : MonoBehaviour
     void Navigation()
     {
         if (!Input.GetMouseButtonDown(1)) return;
-        RaycastHit hit;
-        if (!Physics.Raycast(_camera.ScreenPointToRay(Input.mousePosition), out hit)) return;
+        if (!Physics.Raycast(_camera.ScreenPointToRay(Input.mousePosition), out RaycastHit hit)) return;
         if (!hit.collider.CompareTag("Surface")) return;
-        if (Soldier.chosenSoldier == null) return;
-        Soldier.chosenSoldier.ForEach(sol => 
-        {   
-            if (sol.currentForm == null) sol.Navigate(hit.point);
-            else sol.currentForm.GetDestination(sol, hit.point); 
-        });
+        if (Creature.chosenCreatures == null) return;
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            Creature.chosenCreatures.ForEach(c => c.AddPatrollPoint(hit.point));
+        }
+        else Creature.chosenCreatures.ForEach(c => c.NavigateAndClearPatroll(hit.point));
     }
     void ChooseUnits()
     {
@@ -55,22 +54,10 @@ public class WalkingManager : MonoBehaviour
             if (Vector2.Distance(curentMousePos, startMousePos) < 10) return;
             var corner = new Vector2(Mathf.Min(startMousePos.x, curentMousePos.x), Mathf.Min(startMousePos.y, curentMousePos.y));
             var secondCorner = new Vector2(Mathf.Max(startMousePos.x, curentMousePos.x), Mathf.Max(startMousePos.y, curentMousePos.y));
-            Soldier.soldiers.ForEach(sol => sol.IsInsideRect(new(corner, secondCorner - corner), _camera));
+            Creature.creatures.ForEach(sol => sol.IsInsideRect(new(corner, secondCorner - corner), _camera));
 
 
         }
 
-    }
-    public void Form(int formationID)
-    {
-        switch (formationID)
-        {
-            case 0:
-            default:
-                Formation form = new LineForm();
-                Soldier.chosenSoldier.ForEach(sol => form.Join(sol));
-                form.Form();
-                break;
-        }
     }
 }
