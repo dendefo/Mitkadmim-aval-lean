@@ -9,11 +9,6 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioSource _musicSource;
     [SerializeField] private AudioSource _sfxSource;
 
-    [SerializeField] private float MusicVolume = 1;
-    [SerializeField] private float sfxVolume = 1;
-
-    [SerializeField] private float MusicWeight = 0.2f;
-    [SerializeField] private float sfxWeight = 0.3f;
 
     [SerializeField] private AudioClip MusicIntro;
     [SerializeField] private AudioClip[] MusicLoop;
@@ -62,16 +57,7 @@ public class AudioManager : MonoBehaviour
         Creature.VoiceEvent += PlaysfxTrack;
     }
 
-    private void AdjustVolumes()
-    {
-        float distribution = 1;
 
-        _sfxSource.volume = distribution*sfxVolume;
-        if(_sfxSource.isPlaying) distribution -= sfxWeight;
-
-        _musicSource.volume = distribution*MusicVolume;
-        
-    }
 
     public void PlaysfxTrack(AudioClip clip)
     {
@@ -95,7 +81,6 @@ public class AudioManager : MonoBehaviour
             Source.Play();
         }
 
-        AdjustVolumes();
 
     }
 
@@ -114,7 +99,6 @@ public class AudioManager : MonoBehaviour
         {
             _musicSource.clip = MusicQueue.Dequeue();
             _musicSource.Play();
-            AdjustVolumes();
             yield return new WaitForSeconds(_musicSource.clip.length);
             MusicQueue.Enqueue(MusicLoop[Random.Range(0,MusicLoop.Length)]);
             
