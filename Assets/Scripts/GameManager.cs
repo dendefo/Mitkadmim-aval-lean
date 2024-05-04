@@ -126,4 +126,14 @@ public class GameManager : MonoBehaviour
         IPausable.Pause(isPaused);
         pausePanel.SetActive(isPaused);
     }
+
+    public void SaveGame()
+    {
+        ISavable.Save();
+    }
+
+    private void LoadGame()
+    {
+        ISavable.Load();
+    }
 }
