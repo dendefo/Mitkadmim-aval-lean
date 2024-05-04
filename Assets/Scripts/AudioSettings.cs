@@ -15,7 +15,7 @@ public class AudioSettings : MonoBehaviour
 
 
 
-    private void Awake()
+    private void OnEnable()
     {
         float output;
         MasterMixer.GetFloat("MasterVolume",out output);
@@ -23,10 +23,10 @@ public class AudioSettings : MonoBehaviour
 
 
         MasterMixer.GetFloat("MusicVolume", out output);
-        MasterVolumeSlider.value = output;
+        MusicVolumeSlider.value = output;
 
         MasterMixer.GetFloat("SFXVolume", out output);
-        MasterVolumeSlider.value = output;
+        SFXVolumeSlider.value = output;
     }
 
     public void updateMasterVolume(float volume)
