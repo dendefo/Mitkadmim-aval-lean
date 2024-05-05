@@ -1,10 +1,13 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using static UnityEngine.EventSystems.EventTrigger;
 
-public class GameManager : MonoBehaviour
+public class GameManager : MonoBehaviour, ISavable
 {
 
     public static GameManager instance;
@@ -23,6 +26,7 @@ public class GameManager : MonoBehaviour
     public GameObject pausePanel;
     private void Awake()
     {
+        IPausable.Pause(false);
         if (instance == null)
         {
             instance = this;
@@ -35,8 +39,62 @@ public class GameManager : MonoBehaviour
     }
     private void OnEnable()
     {
+        ISavable.SaveEvent += SaveData;
+        ISavable.LoadEvent += LoadData;
         CameraMovement.CameraCreated += CameraCreated;
         GoldCoin.OnGoldCoinClick += GoldCoinClicked;
+    }
+
+    private void Start()
+    {
+        if (ISavable.WantsToLoad)
+        {
+            Creature.creatures.ForEach(creature => Destroy(creature.gameObject));
+            Creature.creatures.Clear();
+            LoadGame();
+        }
+    }
+
+    private void LoadData(Dictionary<string, object> dictionary)
+    {
+        GoldAmount = int.Parse(dictionary["GoldAmount"].ToString());
+        difficulryMultiplyer = float.Parse(dictionary["difficulryMultiplyer"].ToString());
+        spawnTimer = float.Parse(dictionary["SpawnTimer"].ToString());
+        goldIncomeTimer = float.Parse(dictionary["GoldIncomeTimer"].ToString());
+        playerBase.stats.CurrentHP = int.Parse(dictionary["PlayerBaseHp"].ToString());
+        playerBase.stats.MaxHP = int.Parse(dictionary["PlayerBaseMaxHp"].ToString());
+        playerBase.stats.Damage = int.Parse(dictionary["PlayerBaseDamage"].ToString());
+        goldText.text = GoldAmount.ToString();
+        foreach (var data in dictionary.Keys)
+        {
+            if (!data.Contains("Creature")) continue;
+            JsonSerializerSettings settings = new();
+            settings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            settings.Formatting = Formatting.Indented;
+            var creatureData = JsonConvert.DeserializeObject<CreatureSaveData>(dictionary[data].ToString(),settings);
+            Debug.Log(creatureData.Name);
+            var creature = Instantiate(Resources.Load<Creature>("Creatures/"+creatureData.Name), creatureData.Position, Quaternion.identity);
+            creature.Load(creatureData);
+            if (creature is Enemy enemy)
+            {
+                enemy.AttackingTarget = playerBase.transform;
+                enemy.Stats.Multiply(difficulryMultiplyer);
+                enemy.Stats.Die += () => EnemyDead(enemy);
+            }
+        }
+        ISavable.WantsToLoad = false;
+    }
+
+    //Fill this method with data you want to save
+    private void SaveData(Dictionary<string, object> dictionary)
+    {
+        dictionary["GoldAmount"] = GoldAmount.ToString();
+        dictionary["difficulryMultiplyer"] = difficulryMultiplyer.ToString();
+        dictionary["SpawnTimer"] = spawnTimer.ToString();
+        dictionary["GoldIncomeTimer"] = goldIncomeTimer.ToString();
+        dictionary["PlayerBaseHp"] = playerBase.stats.CurrentHP.ToString();
+        dictionary["PlayerBaseMaxHp"] = playerBase.stats.MaxHP.ToString();
+        dictionary["PlayerBaseDamage"] = playerBase.stats.Damage.ToString();
     }
 
     private void GoldCoinClicked(GoldCoin coin)
@@ -119,6 +177,8 @@ public class GameManager : MonoBehaviour
     {
         CameraMovement.CameraCreated -= CameraCreated;
         GoldCoin.OnGoldCoinClick -= GoldCoinClicked;
+        ISavable.SaveEvent -= SaveData;
+        ISavable.LoadEvent -= LoadData;
     }
 
     public void Pause(bool isPaused)
@@ -130,6 +190,7 @@ public class GameManager : MonoBehaviour
     public void SaveGame()
     {
         ISavable.Save();
+        SceneManager.LoadScene(0);
     }
 
     private void LoadGame()

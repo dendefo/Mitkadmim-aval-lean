@@ -8,21 +8,23 @@ using System.IO;
 
 public interface ISavable
 {
-    public static Dictionary<String, String> GameData;
-    public static event Action<Dictionary<String, String>> SaveEvent;
-    public static event Action<Dictionary<String, String>> LoadEvent;
+    public static bool WantsToLoad { get; set; }
+    public static Dictionary<String, object> GameData;
+    public static event Action<Dictionary<String, object>> SaveEvent;
+    public static event Action<Dictionary<String, object>> LoadEvent;
     static void Save()
     {
         if (GameData == null)
         {
-            GameData = new Dictionary<String, String>();
+            GameData = new Dictionary<String, object>();
         }
 
         SaveEvent?.Invoke(GameData);
-        
-        string JsonOutput = JsonConvert.SerializeObject(GameData);
+        JsonSerializerSettings settings = new JsonSerializerSettings();
+        settings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+        string JsonOutput = JsonConvert.SerializeObject(GameData, Formatting.Indented,settings);
         string path = Application.persistentDataPath + "/Save.txt";
-
+        Debug.Log(path);
         using (StreamWriter outputFile = new StreamWriter(path,false))
         {
             outputFile.Write(JsonOutput);
@@ -38,7 +40,7 @@ public interface ISavable
             return;
         }
 
-        GameData = JsonConvert.DeserializeObject<Dictionary<String, String>>(JsonData);
+        GameData = JsonConvert.DeserializeObject<Dictionary<String, object>>(JsonData);
 
         LoadEvent?.Invoke(GameData);
     }

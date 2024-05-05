@@ -60,4 +60,9 @@ public class MainMenu : MonoBehaviour
         Main_Menu.SetActive(true);
         SettingsMenu.SetActive(false);
     }
+    public void Continue()
+    {
+        ISavable.WantsToLoad = true;
+        StartGame();
+    }
 }

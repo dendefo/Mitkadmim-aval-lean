@@ -8,6 +8,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6581448966056049089}
     m_Modifications:
+    - target: {fileID: -8703544979030634772, guid: 1b112adaa2a56d043b1f89cb3b9badfd,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1b112adaa2a56d043b1f89cb3b9badfd,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -58,10 +63,35 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -6153458435004094520, guid: 1b112adaa2a56d043b1f89cb3b9badfd,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -298872764833787496, guid: 1b112adaa2a56d043b1f89cb3b9badfd,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 205264445719448523, guid: 1b112adaa2a56d043b1f89cb3b9badfd,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 1b112adaa2a56d043b1f89cb3b9badfd,
         type: 3}
       propertyPath: m_Name
       value: Erika Archer With Bow Arrow
+      objectReference: {fileID: 0}
+    - target: {fileID: 1794436471828847685, guid: 1b112adaa2a56d043b1f89cb3b9badfd,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4936884950917866777, guid: 1b112adaa2a56d043b1f89cb3b9badfd,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -115,21 +145,14 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4021486195572898073}
   m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: be10c266b8c40264f969224c9166fb89, type: 3}
+  m_Avatar: {fileID: 9000000, guid: 1b112adaa2a56d043b1f89cb3b9badfd, type: 3}
   m_Controller: {fileID: 22100000, guid: ffdf8df72b8a3014dac0e95fc8d63a20, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
-  m_WarningMessage: "\nBinding warning: Some generic clip(s) animate transforms that
-    are already bound by a Humanoid avatar. These transforms can only be changed
-    by Humanoid clips.\n\tTransform 'mixamorig:Hips'\n\tTransform 'mixamorig:LeftFoot'\n\tTransform
-    'mixamorig:LeftHandThumb2'\n\tTransform 'mixamorig:RightHandRing2'\n\tTransform
-    'mixamorig:Spine1'\n\tTransform 'mixamorig:RightArm'\n\tTransform 'mixamorig:LeftLeg'\n\tTransform
-    'mixamorig:LeftShoulder'\n\tTransform 'mixamorig:RightHandRing1'\n\tTransform
-    'mixamorig:RightHandIndex3'\n\tand more ...\n\tFrom animation clip 'mixamo.com'\n\tFrom
-    animation clip 'mixamo.com'"
+  m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0

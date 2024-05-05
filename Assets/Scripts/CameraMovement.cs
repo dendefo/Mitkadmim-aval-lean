@@ -39,4 +39,8 @@ public class CameraMovement : MonoBehaviour
         transform.parent.Translate(direction * speed * Time.deltaTime);
         
     }
+    private void OnDestroy()
+    {
+        Creature.CreatureSpawned -= CreatureSpawned;
+    }
 }

@@ -25,7 +25,7 @@ public class Enemy : Creature
         {
             EnemyReachedBase?.Invoke(this);
             playerBase.stats.GetDamage(Stats.Damage);
-            Destroy(gameObject);
+            Die();
         }
         base.Update();
 
@@ -36,12 +36,18 @@ public class Enemy : Creature
         if (collision.gameObject.TryGetComponent(out PlayerBase playerBase))
         {
             playerBase.stats.GetDamage(Stats.Damage);
-            Destroy(gameObject);
+            Die();
         }
     }
-    protected override void OnDestroy()
+    protected override void Die()
+    {
+        enemies.Remove(this);
+        base.Die();
+    }
+    override protected void OnDestroy()
     {
         base.OnDestroy();
         enemies.Remove(this);
+
     }
 }

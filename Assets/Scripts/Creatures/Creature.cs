@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -5,7 +6,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Creature : MonoBehaviour, IPausable
+public class Creature : MonoBehaviour, IPausable, ISavable
 {
     public static event Action<AudioClip> VoiceEvent;
     public static event Action<Creature> CreatureSpawned;
@@ -19,19 +20,37 @@ public class Creature : MonoBehaviour, IPausable
     public HpBar hpBar;
 
     [SerializeField] List<SkinnedMeshRenderer> meshRenderers;
-    private List<Vector3> points = new();
+    public List<Vector3> points = new();
     public Transform AttackingTarget;
 
+    public CreatureSaveData SaveData;
 
     protected virtual void Awake()
     {
+        ISavable.SaveEvent += Save;
         IPausable.PauseEvent += Pause;
         creatures.Add(this);
+        if (ISavable.WantsToLoad) return;
         if (data != null) SetStats(data.stats);
+
         if (hpBar != null) hpBar.Subscribe(ref Stats.HpChanged);
         Stats.Die += Die;
     }
 
+    private void Save(Dictionary<string, object> dictionary)
+    {
+        if (Stats.CurrentHP == 0) return;
+        CreatureSaveData saveData = new(this);
+        dictionary[GetInstanceID().ToString() + "Creature"] = saveData;
+    }
+
+    public void Load(CreatureSaveData data)
+    {
+        SetStats(data.Stats);
+        points = data.Points;
+        if (hpBar != null) hpBar.Subscribe(ref Stats.HpChanged);
+        Stats.Die += Die;
+    }
     private void Pause(bool isPaused)
     {
         NavAgent.enabled = !isPaused;
@@ -42,10 +61,15 @@ public class Creature : MonoBehaviour, IPausable
     {
         CreatureSpawned?.Invoke(this);
     }
-    private void Die()
+    protected virtual void Die()
     {
         if (data.OnDieClip != null) VoiceEvent?.Invoke(data.OnDieClip);
-        Destroy(gameObject);
+        animator.SetBool("IsDead", true);
+        creatures.Remove(this);
+        chosenCreatures.Remove(this);
+        NavAgent.enabled = false;
+        Destroy(gameObject, 2f);
+        enabled = false;
 
     }
 
@@ -62,7 +86,7 @@ public class Creature : MonoBehaviour, IPausable
         }
         CheckEnemiesToAttack();
         if (AttackingTarget != null && this is not Enemy)
-        { 
+        {
             NavAgent.SetDestination(AttackingTarget.position);
             Debug.Log(NavAgent.remainingDistance, this);
             if (NavAgent.remainingDistance < data.AttackRange)
@@ -94,8 +118,8 @@ public class Creature : MonoBehaviour, IPausable
     }
     private void UpdateAnimations()
     {
-        animator.SetFloat("Speed", NavAgent.velocity.normalized.x);
-        animator.SetFloat("Rotation", NavAgent.velocity.normalized.x);
+        animator.SetFloat("Speed", (transform.rotation * NavAgent.velocity).normalized.x);
+        animator.SetFloat("Rotation", (transform.rotation * NavAgent.velocity).normalized.z);
     }
 
     public void SetStats(CreatureStats stats)
@@ -141,7 +165,7 @@ public class Creature : MonoBehaviour, IPausable
     {
         NavAgent.SetDestination(destination);
         points.Clear();
-        VoiceEvent?.Invoke(data.OnMoveClip);
+        if (data.OnMoveClip != null) VoiceEvent?.Invoke(data.OnMoveClip);
     }
     public void AddPatrollPoint(Vector3 destination)
     {
@@ -160,11 +184,29 @@ public class Creature : MonoBehaviour, IPausable
     }
     protected virtual void OnDestroy()
     {
-
+        ISavable.SaveEvent -= Save;
         IPausable.PauseEvent -= Pause;
         Stats.Die -= Die;
-        creatures.Remove(this);
-        if (chosenCreatures.Contains(this)) chosenCreatures.Remove(this);
         if (hpBar != null) hpBar.Unsubscribe();
+        creatures.Remove(this);
+        chosenCreatures.Remove(this);
+    }
+}
+[Serializable]
+public struct CreatureSaveData
+{
+    public CreatureStats Stats;
+    public Vector3 Position;
+    public Quaternion Rotation;
+    public List<Vector3> Points;
+    public string Name;
+
+    public CreatureSaveData(Creature creature)
+    {
+        Stats = creature.Stats;
+        Position = creature.transform.position;
+        Rotation = creature.transform.rotation;
+        Points = creature.points;
+        Name = creature.name.Replace("(Clone)", "");
     }
 }

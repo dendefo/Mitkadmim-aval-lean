@@ -10,6 +10,7 @@ public struct CreatureStats
     public float CurrentHP;
     public float Damage;
     public event Action Die;
+    [NonSerialized()]
     public Action<float> HpChanged;
     public CreatureStats(float maxHP, float currentHP, float damage)
     {
@@ -21,6 +22,7 @@ public struct CreatureStats
     }
     public void GetDamage(float damage)
     {
+        if (CurrentHP == 0) return;
         CurrentHP -= damage;
         HpChanged?.Invoke(CurrentHP / MaxHP);
         if (CurrentHP <= 0)
