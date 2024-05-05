@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d610e25168464a34fa23cd58a2dddafc, type: 3}
+  m_Name: Warrior
+  m_EditorClassIdentifier: 
+  stats:
+    MaxHP: 20
+    CurrentHP: 15
+    Damage: 5
+  GoldValue: 10
+  AngerRange: 10
+  AttackRange: 5
+  OnPickClip: {fileID: 0}
+  OnMoveClip: {fileID: 0}
+  OnDieClip: {fileID: 0}
+  OnAttackClip: {fileID: 0}
+  OnHitClip: {fileID: 0}
