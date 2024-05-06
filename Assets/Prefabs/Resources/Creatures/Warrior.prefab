@@ -61,7 +61,17 @@ MonoBehaviour:
   - {fileID: 2730708413930056313}
   - {fileID: 8434303835923076698}
   - {fileID: 2998826148511710879}
+  points: []
   AttackingTarget: {fileID: 0}
+  SaveData:
+    Stats:
+      MaxHP: 0
+      CurrentHP: 0
+      Damage: 0
+    Position: {x: 0, y: 0, z: 0}
+    Rotation: {x: 0, y: 0, z: 0, w: 0}
+    Points: []
+    Name: 
 --- !u!195 &5021606386603795038
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -321,6 +331,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d02310406848ac242925e6b36b0e0076, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  parent: {fileID: 8301685279818013535}
 --- !u!95 &5923233616954960373
 Animator:
   serializedVersion: 5

@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class AnimationeventReciever : MonoBehaviour
 {
+    [SerializeField] private Creature parent;
     public void AttackEvent()
     {
-        transform.parent.gameObject.SendMessage("Attack");
+        parent.Attack();
     }
 }

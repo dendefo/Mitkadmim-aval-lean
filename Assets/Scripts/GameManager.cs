@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour, ISavable
 
     public List<Transform> Spawners;
     public List<Enemy> PossibleEnemiesToSpawn;
+    public float TimeWithouPasuse;
     public float SpawnIntervalSeconds = 3f;
     public int MaxEnemies = 10;
     [SerializeField] private float spawnTimer = 3f;
@@ -24,6 +25,7 @@ public class GameManager : MonoBehaviour, ISavable
     [SerializeField] private float goldIncomeTimer = 2f;
     public float difficulryMultiplyer = 1;
     public GameObject pausePanel;
+    private int enemiesKilled = 0;
     private void Awake()
     {
         IPausable.Pause(false);
@@ -43,6 +45,17 @@ public class GameManager : MonoBehaviour, ISavable
         ISavable.LoadEvent += LoadData;
         CameraMovement.CameraCreated += CameraCreated;
         GoldCoin.OnGoldCoinClick += GoldCoinClicked;
+        playerBase.stats.Die += EndOfGame;
+        
+    }
+
+    private void EndOfGame()
+    {
+        EndGameStats.TimePlayed = TimeWithouPasuse;
+        EndGameStats.GoldCollected = GoldAmount;
+        EndGameStats.EnemiesKilled = enemiesKilled;
+        SceneManager.LoadScene(2);
+
     }
 
     private void Start()
@@ -64,16 +77,18 @@ public class GameManager : MonoBehaviour, ISavable
         playerBase.stats.CurrentHP = int.Parse(dictionary["PlayerBaseHp"].ToString());
         playerBase.stats.MaxHP = int.Parse(dictionary["PlayerBaseMaxHp"].ToString());
         playerBase.stats.Damage = int.Parse(dictionary["PlayerBaseDamage"].ToString());
+        TimeWithouPasuse = float.Parse(dictionary["TimePlayed"].ToString());
         goldText.text = GoldAmount.ToString();
+        enemiesKilled = int.Parse(dictionary["EnemiesKilled"].ToString());
         foreach (var data in dictionary.Keys)
         {
             if (!data.Contains("Creature")) continue;
             JsonSerializerSettings settings = new();
             settings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             settings.Formatting = Formatting.Indented;
-            var creatureData = JsonConvert.DeserializeObject<CreatureSaveData>(dictionary[data].ToString(),settings);
+            var creatureData = JsonConvert.DeserializeObject<CreatureSaveData>(dictionary[data].ToString(), settings);
             Debug.Log(creatureData.Name);
-            var creature = Instantiate(Resources.Load<Creature>("Creatures/"+creatureData.Name), creatureData.Position, Quaternion.identity);
+            var creature = Instantiate(Resources.Load<Creature>("Creatures/" + creatureData.Name), creatureData.Position, Quaternion.identity);
             creature.Load(creatureData);
             if (creature is Enemy enemy)
             {
@@ -95,6 +110,8 @@ public class GameManager : MonoBehaviour, ISavable
         dictionary["PlayerBaseHp"] = playerBase.stats.CurrentHP.ToString();
         dictionary["PlayerBaseMaxHp"] = playerBase.stats.MaxHP.ToString();
         dictionary["PlayerBaseDamage"] = playerBase.stats.Damage.ToString();
+        dictionary["TimePlayed"] = TimeWithouPasuse.ToString();
+        dictionary["EnemiesKilled"] = enemiesKilled.ToString();
     }
 
     private void GoldCoinClicked(GoldCoin coin)
@@ -109,6 +126,7 @@ public class GameManager : MonoBehaviour, ISavable
         {
             Pause(!IPausable.isPaused);
         }
+        if (!IPausable.isPaused) { TimeWithouPasuse += Time.deltaTime; }
         //Spawn enemies
         SpawnTimer();
         //Income gold
@@ -166,7 +184,9 @@ public class GameManager : MonoBehaviour, ISavable
     private void EnemyDead(Enemy enemy)
     {
         Instantiate(Resources.Load<GoldCoin>("GoldCoin"), enemy.transform.position, Quaternion.identity).value = enemy.data.GoldValue;
-        difficulryMultiplyer *= 1.1f;
+        difficulryMultiplyer *= 1.05f;
+        enemiesKilled++;
+        enemy.Stats.Die -= () => EnemyDead(enemy);
     }
 
     private void CameraCreated(Camera camera)
@@ -179,6 +199,7 @@ public class GameManager : MonoBehaviour, ISavable
         GoldCoin.OnGoldCoinClick -= GoldCoinClicked;
         ISavable.SaveEvent -= SaveData;
         ISavable.LoadEvent -= LoadData;
+        playerBase.stats.Die -= EndOfGame;
     }
 
     public void Pause(bool isPaused)
@@ -197,4 +218,10 @@ public class GameManager : MonoBehaviour, ISavable
     {
         ISavable.Load();
     }
+}
+public struct EndGameStats
+{
+    public static float TimePlayed;
+    public static int GoldCollected;
+    public static int EnemiesKilled;
 }

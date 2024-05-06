@@ -22,7 +22,7 @@ public struct CreatureStats
     }
     public void GetDamage(float damage)
     {
-        if (CurrentHP == 0) return;
+        //if (CurrentHP == 0) return;
         CurrentHP -= damage;
         HpChanged?.Invoke(CurrentHP / MaxHP);
         if (CurrentHP <= 0)

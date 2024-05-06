@@ -125,6 +125,7 @@ public class Creature : MonoBehaviour, IPausable, ISavable
     public void SetStats(CreatureStats stats)
     {
         Stats = stats;
+        Stats.CurrentHP = Stats.MaxHP;
     }
 
     private void OnMouseDown()

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stats:
     MaxHP: 10
-    CurrentHP: 0
+    CurrentHP: 10
     Damage: 7
   GoldValue: 3
   AngerRange: 20
