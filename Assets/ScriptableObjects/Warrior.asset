@@ -19,8 +19,8 @@ MonoBehaviour:
   GoldValue: 10
   AngerRange: 10
   AttackRange: 5
-  OnPickClip: {fileID: 0}
-  OnMoveClip: {fileID: 0}
+  OnPickClip: {fileID: 8300000, guid: 8ac2f4d9a4504e74f97dbd6651d7c3ae, type: 3}
+  OnMoveClip: {fileID: 8300000, guid: 6a314821f21f12c408058b3f77b24406, type: 3}
   OnDieClip: {fileID: 0}
-  OnAttackClip: {fileID: 0}
+  OnAttackClip: {fileID: 8300000, guid: 030962c332daea644af3fc4506bcbb11, type: 3}
   OnHitClip: {fileID: 0}
