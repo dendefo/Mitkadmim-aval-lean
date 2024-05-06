@@ -9,14 +9,14 @@ using System.IO;
 public interface ISavable
 {
     public static bool WantsToLoad { get; set; }
-    public static Dictionary<String, object> GameData;
-    public static event Action<Dictionary<String, object>> SaveEvent;
-    public static event Action<Dictionary<String, object>> LoadEvent;
+    public static Dictionary<string, object> GameData;
+    public static event Action<Dictionary<string, object>> SaveEvent;
+    public static event Action<Dictionary<string, object>> LoadEvent;
     static void Save()
     {
         if (GameData == null)
         {
-            GameData = new Dictionary<String, object>();
+            GameData = new Dictionary<string, object>();
         }
 
         SaveEvent?.Invoke(GameData);
